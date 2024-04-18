@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Request, Response, NextFunction } from 'express'
 import * as jwt from 'jsonwebtoken'
+import * as QuoteService from '../services/quote.service';
+import  HttpStatusCodes  from 'http-status-codes';
 
 export function authenticateToken(
     req: Request,
@@ -34,16 +36,22 @@ export function authenticateToken(
     }
 }
 
-export function isAdmin(req: Request, res: Response, next: NextFunction) {
-    // @ts-ignore
-    const { user }: { user: any } = req
+// export async function isQuoteOwner(req: Request, res: Response, next: NextFunction) {
+//     try {
+//         const userId = req.user.id;
+//         const quoteId = Number(req.params.id);
 
-    if (user && user.isAdmin) {
-        next() // Proceed to the next middleware or route handler
-    } else {
-        return res.status(403).json({
-            success: false,
-            message: 'Unauthorized: User is not an admin',
-        })
-    }
-}
+//         const isOwner = await QuoteService.isQuoteOwner(userId, quoteId);
+
+//         if (isOwner) {
+//             next();
+//         } else {
+//             return res.status(HttpStatusCodes.FORBIDDEN).json({
+//                 success: false,
+//                 message: 'Unauthorized: You are not allowed to modify this quote',
+//             });
+//         }
+//     } catch (error) {
+//         next(error);
+//     }
+// }

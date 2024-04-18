@@ -26,28 +26,59 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 }
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-  const quotes: any = req.body
-  const id = Number(req.params.id)
-  const quote = await QuoteService.update(id, quotes)
-  res.status(HttpStatusCodes.OK).send(quote);
-  } catch(error) {
-    next(error)
+  try{
+      const { id } = req.params
+  const loggedInUserId = (req as any).user.userId;
+
+  // @TODO: Handle errors
+  const post = await QuoteService.updatequoteById(Number(id), req.body, loggedInUserId)
+
+  res.status(HttpStatusCodes.CREATED).json(post)
+  } catch(e) {
+      next(e)
   }
 }
+// export const update = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const userId = Number(req.params.id); // Assuming you have middleware to extract user ID from the request
+//     const quoteId = Number(req.params.id);
+//     const { newText } = req.body;
 
+//     await QuoteService.update(quoteId, userId, newText);
+    
+//     res.status(HttpStatusCodes.OK).send({ message: 'Quote updated successfully' });
+//   } catch(error) {
+//     next(error);
+//   }
+// }
+
+
+// export const removebyId = async (req: Request, res: Response, next: NextFunction) => {
+//   try{
+
+//       const { id } = req.params
+//       // @TODO: Handle errors
+//       // const loggedInUserId = ( req as any ).user.userId
+//       const data = await QuoteService.removeById(Number(id), (req as any ).user.userId)
+//       res.status(HttpStatusCodes.NO_CONTENT).send()
+  
+//   } catch(error)  {
+//       next(error)
+//   }
+// }
 
 export const remove = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params
-  // @TODO: Handle errors
-  const quotes = await QuoteService.remove(Number(id))
-  res.status(HttpStatusCodes.NO_CONTENT).send()
-}catch(error){
-  next(error)
-}
-}
+    const { id } = req.params;
+    const loggedInUserId = req.body.userId;
 
+    await QuoteService.remove(Number(id), loggedInUserId);
+
+    res.status(HttpStatusCodes.NO_CONTENT).send();
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const findOne =async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -59,4 +90,8 @@ export const findOne =async (req: Request, res: Response, next: NextFunction) =>
     next(error);
   }
   }
+
+export function removebyId(arg0: string, authenticateToken: (req: Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>, next: NextFunction) => Response<any, Record<string, any>> | undefined, removebyId: any) {
+    throw new Error('Function not implemented.')
+}
 
